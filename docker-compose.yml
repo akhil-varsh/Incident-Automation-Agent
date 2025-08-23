@@ -1,0 +1,177 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: incident-postgres
+    environment:
+      POSTGRES_DB: incident_db
+      POSTGRES_USER: incident_user
+      POSTGRES_PASSWORD: secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U incident_user -d incident_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ChromaDB Vector Database  
+  chromadb:
+    image: chromadb/chroma:0.4.24
+    container_name: incident-chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/chroma/chroma
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: incident-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ollama for Local Embeddings
+  ollama:
+    image: ollama/ollama:latest
+    container_name: incident-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Incident Automation Agent Application
+  incident-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: incident-agent
+    ports:
+      - "8080:8080"
+    environment:
+      # Database Configuration
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=incident_db
+      - DB_USER=incident_user
+      - DB_PASSWORD=secure_password
+      
+      # Redis Configuration
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      
+      # ChromaDB Configuration
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      
+      # AI Service Configuration (Using Groq)
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_BASE_URL=${GROQ_BASE_URL:-https://api.groq.com/openai}
+      - GROQ_MODEL=${GROQ_MODEL:-gpt-oss-120b}
+      
+      # Slack Configuration
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - SLACK_ENABLED=${SLACK_ENABLED:-true}
+      
+      # Jira Configuration
+      - JIRA_BASE_URL=${JIRA_BASE_URL}
+      - JIRA_EMAIL=${JIRA_EMAIL}
+      - JIRA_API_TOKEN=${JIRA_API_TOKEN}
+      - JIRA_PROJECT_KEY=${JIRA_PROJECT_KEY:-PREP}
+      - JIRA_ENABLED=${JIRA_ENABLED:-true}
+      
+      # Twilio Voice Integration
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - TWILIO_WEBHOOK_BASE_URL=${TWILIO_WEBHOOK_BASE_URL}
+      - TWILIO_TWIML_APP_SID=${TWILIO_TWIML_APP_SID}
+      - TWILIO_ENABLED=${TWILIO_ENABLED:-true}
+      - TWILIO_RECORDING_TIMEOUT=${TWILIO_RECORDING_TIMEOUT:-30}
+      - TWILIO_MAX_DURATION=${TWILIO_MAX_DURATION:-300}
+      
+      # Vonage Voice Integration
+      - VONAGE_API_KEY=${VONAGE_API_KEY}
+      - VONAGE_API_SECRET=${VONAGE_API_SECRET}
+      - VONAGE_PHONE_NUMBER=${VONAGE_PHONE_NUMBER}
+      - VONAGE_WEBHOOK_BASE_URL=${VONAGE_WEBHOOK_BASE_URL}
+      - VONAGE_ENABLED=${VONAGE_ENABLED:-false}
+      - VONAGE_RECORDING_TIMEOUT=${VONAGE_RECORDING_TIMEOUT:-30}
+      - VONAGE_MAX_DURATION=${VONAGE_MAX_DURATION:-300}
+      
+      # Google Cloud Speech-to-Text
+      - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - GOOGLE_SPEECH_LANGUAGE_CODE=${GOOGLE_SPEECH_LANGUAGE_CODE:-en-US}
+      - GOOGLE_SPEECH_MODEL=${GOOGLE_SPEECH_MODEL:-latest_long}
+      
+      # Deepgram Speech-to-Text (Fallback)
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
+      
+      # Ollama Configuration
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text-v1.5}
+      - OLLAMA_ENABLED=${OLLAMA_ENABLED:-true}
+      
+      # Application Configuration
+      - SERVER_PORT=${SERVER_PORT:-8080}
+      - APP_VOICE_SPEECH_TO_TEXT_ENABLED=${APP_VOICE_SPEECH_TO_TEXT_ENABLED:-true}
+      - APP_VOICE_SPEECH_TO_TEXT_SERVICE=${APP_VOICE_SPEECH_TO_TEXT_SERVICE:-google}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chromadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    driver: local
+  chromadb_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+
+networks:
+  default:
+    name: incident-network

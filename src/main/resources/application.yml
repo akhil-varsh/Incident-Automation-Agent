@@ -1,0 +1,185 @@
+spring:
+  application:
+    name: incident-automation-agent
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:incident_db}
+    username: ${DB_USER:incident_user}
+    password: ${DB_PASSWORD:secure_password}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  # Flyway Database Migration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+  
+  # AI Configuration (Using Groq)
+  ai:
+    openai:
+      api-key: ${GROQ_API_KEY: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}
+      base-url: ${GROQ_BASE_URL:https://api.groq.com/openai}
+      chat:
+        options:
+          model: ${GROQ_MODEL:openai/gpt-oss-20b}
+          temperature: 0.3
+          max-tokens: 5000
+    vectorstore:
+      chroma:
+        client:
+          base-url: ${CHROMA_BASE_URL:http://localhost:8000}
+
+# External Integration Configuration
+integrations:
+  slack:
+    bot-token: ${SLACK_BOT_TOKEN:xoxb-9374380368501-9370386972787-9dGDLysOuUEght5LlLYLTKN4}
+    signing-secret: ${SLACK_SIGNING_SECRET:eac2d3a2828dbcd8238a3004ec54ca5c}
+    enabled: ${SLACK_ENABLED:true}
+    default-stakeholders:
+      - "devops-team"
+      - "incident-response"
+    
+  jira:
+    base-url: ${JIRA_BASE_URL:https://akhilvarshpettem.atlassian.net}
+    email: ${JIRA_EMAIL:your-akhilvarshpettem@gmail.com}
+    api-token: ${JIRA_API_TOKEN:ATATT3xFfGF0G9MldT1InW1iFkNTC4gW39YOwF8g8vG7T6Gi3BYRUXq41PVOJ5Rb0CNx6e8YZydfSbMm9zFdnCEbDeNGSJekawKuEL3RvpX47I6_TMK6e5ONGZiA8_AK}
+    project-key: ${JIRA_PROJECT_KEY:PREP}
+    enabled: ${JIRA_ENABLED:true}
+    priority-mapping:
+      LOW: "Minor"
+      MEDIUM: "Major"
+      HIGH: "Critical"
+  
+  vonage:
+    api-key: ${VONAGE_API_KEY:d236b970}
+    api-secret: ${VONAGE_API_SECRET:7A9VRUMBbBhCWGAu}
+    phone-number: ${VONAGE_PHONE_NUMBER:+12345678901}
+    enabled: ${VONAGE_ENABLED:false}
+    webhook-base-url: ${VONAGE_WEBHOOK_BASE_URL:https://your-domain.com}
+    recording:
+      timeout-seconds: ${VONAGE_RECORDING_TIMEOUT:30}
+      max-duration-seconds: ${VONAGE_MAX_DURATION:300}
+  
+  twilio:
+    account-sid: ${TWILIO_ACCOUNT_SID:AC08854d517d4c0ba1775cec4e96b47fa0}
+    auth-token: ${TWILIO_AUTH_TOKEN:5db62c4294b8f20b94f8357d913b26fd}
+    phone-number: ${TWILIO_PHONE_NUMBER:+18723501845}
+    twiml-app-sid: ${TWILIO_TWIML_APP_SID:AP6b19bd3d0346c2ac2bec85e9dbab3365}
+    enabled: ${TWILIO_ENABLED:true}
+    webhook-base-url: ${TWILIO_WEBHOOK_BASE_URL:https://amazingly-assured-asp.ngrok-free.app}
+    recording:
+      timeout-seconds: ${TWILIO_RECORDING_TIMEOUT:30}
+      max-duration-seconds: ${TWILIO_MAX_DURATION:300}
+    outbound:
+      enabled: ${TWILIO_OUTBOUND_ENABLED:true}
+      developer-phone-number: ${TWILIO_DEVELOPER_PHONE_NUMBER:+919493312768}
+      escalation-phone-number: ${TWILIO_ESCALATION_PHONE_NUMBER:+1234567891}
+
+# Google Cloud Speech-to-Text Configuration
+google:
+  cloud:
+    project-id: ${GOOGLE_CLOUD_PROJECT_ID:akhil-stt}
+    credentials: ${GOOGLE_APPLICATION_CREDENTIALS:/home/akhil/.config/gcloud/application_default_credentials.json}
+  speech:
+    language-code: ${GOOGLE_SPEECH_LANGUAGE_CODE:en-US}
+    model: ${GOOGLE_SPEECH_MODEL:latest_long}
+
+# Deepgram Speech-to-Text Configuration (Fallback)
+deepgram:
+  api-key: ${DEEPGRAM_API_KEY:1bbfaddf940c9778bac6648bbe7058ece427edef}
+  api-url: ${DEEPGRAM_API_URL:https://api.deepgram.com/v1/listen}
+
+# Knowledge Base Configuration
+knowledge:
+  chromadb:
+    url: ${CHROMA_BASE_URL:http://localhost:8000}
+    collection: ${CHROMA_COLLECTION:incident_knowledge}
+    timeout: ${CHROMA_TIMEOUT:30}
+    embedding-model: ${CHROMA_EMBEDDING_MODEL:nomic-embed-text:v1.5}
+    max-results: ${CHROMA_MAX_RESULTS:10}
+    similarity-threshold: ${CHROMA_SIMILARITY_THRESHOLD:0.5}
+
+# Ollama Configuration for Local Embeddings
+ollama:
+  base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+  embedding-model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text:v1.5}
+  timeout: ${OLLAMA_TIMEOUT:30}
+  enabled: ${OLLAMA_ENABLED:true}
+
+# Application Configuration
+app:
+  incident:
+    processing:
+      timeout: 30s
+      retry-attempts: 3
+      retry-delay: 2s
+    ai:
+      classification-timeout: 10
+      fallback-enabled: true
+    knowledge-base:
+      similarity-threshold: 0.7
+      max-results: 3
+  
+  # Voice Integration Configuration
+  voice:
+    speech-to-text:
+      enabled: ${APP_VOICE_SPEECH_TO_TEXT_ENABLED:true}
+      service: ${APP_VOICE_SPEECH_TO_TEXT_SERVICE:google}
+  
+  # Rate Limiting Configuration
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+    requests-per-minute: ${RATE_LIMIT_REQUESTS_PER_MINUTE:60}
+    requests-per-hour: ${RATE_LIMIT_REQUESTS_PER_HOUR:1000}
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    com.xlbiz.incident: INFO
+    org.springframework.ai: DEBUG
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n"
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
