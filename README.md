@@ -5,7 +5,7 @@ An AI-powered incident management system that automates the entire incident life
 ## 🎯 Key Features
 
 ### 🤖 AI-Powered Intelligence
-- **Automatic Severity Classification**: Uses Groq LLM to analyze incident descriptions and assign appropriate severity levels (LOW, MEDIUM, HIGH)
+- **Automatic Severity Classification**: Uses gpt-oss-20b to analyze incident descriptions and assign appropriate severity levels (LOW, MEDIUM, HIGH)
 - **Intelligent Suggestions**: Provides step-by-step remediation recommendations based on incident analysis
 - **Vector Knowledge Base**: ChromaDB-powered similarity search for finding relevant solutions from past incidents
 - **Confidence Scoring**: AI provides confidence levels for its classifications and suggestions
