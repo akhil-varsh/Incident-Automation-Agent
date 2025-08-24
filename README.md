@@ -1,11 +1,11 @@
-# XLBiz Incident Automation Agent
+# Incident Automation Agent
 
 An AI-powered incident management system that automates the entire incident lifecycle from reporting to resolution. The system accepts incident reports through multiple channels (REST API, voice calls) and automatically processes them using AI classification, creates Slack channels and sends messages, and provides intelligent suggestions based on Ai Classification/knowledge base.
 
 ## 🎯 Key Features
 
 ### 🤖 AI-Powered Intelligence
-- **Automatic Severity Classification**: Uses Groq LLM to analyze incident descriptions and assign appropriate severity levels (LOW, MEDIUM, HIGH)
+- **Automatic Severity Classification**: Uses gpt-oss-20b to analyze incident descriptions and assign appropriate severity levels (LOW, MEDIUM, HIGH)
 - **Intelligent Suggestions**: Provides step-by-step remediation recommendations based on incident analysis
 - **Vector Knowledge Base**: ChromaDB-powered similarity search for finding relevant solutions from past incidents
 - **Confidence Scoring**: AI provides confidence levels for its classifications and suggestions
