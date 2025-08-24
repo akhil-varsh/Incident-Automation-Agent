@@ -15,13 +15,13 @@ import java.util.Base64;
  */
 @SpringBootTest
 @TestPropertySource(properties = {
-    "integrations.twilio.account-sid=AC08854d517d4c0ba1775cec4e96b47fa0",
-    "integrations.twilio.auth-token=5db62c4294b8f20b94f8357d913b26fd",
-    "integrations.twilio.phone-number=+18723501845",
-    "integrations.twilio.webhook-base-url=https://8159504a71bc.ngrok-free.app",
+    "integrations.twilio.account-sid=${TWILIO_ACCOUNT_SID}",
+    "integrations.twilio.auth-token=${TWILIO_AUTH_TOKEN}",
+    "integrations.twilio.phone-number=${TWILIO_PHONE_NUMBER}",
+    "integrations.twilio.webhook-base-url=${TWILIO_WEBHOOK_BASE_URL}",
     "integrations.twilio.enabled=true",
-    "google.cloud.project-id=akhil-stt",
-    "google.application.credentials=/home/akhil/.config/gcloud/application_default_credentials.json",
+    "google.cloud.project-id=${GOOGLE_CLOUD_PROJECT_ID}",
+    "google.application.credentials=${GOOGLE_APPLICATION_CREDENTIALS}",
     "google.speech.language-code=en-US",
     "google.speech.model=latest_long",
     "app.voice.speech-to-text.enabled=true",
@@ -29,9 +29,9 @@ import java.util.Base64;
 })
 public class SpeechToTextIntegrationTest {
     
-    private static final String ACCOUNT_SID = "AC08854d517d4c0ba1775cec4e96b47fa0";
-    private static final String AUTH_TOKEN = "5db62c4294b8f20b94f8357d913b26fd";
-    private static final String RECORDING_SID = "REed5dea99b50be6b30ec9836e7af1f281";
+    private static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    private static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
+    private static final String RECORDING_SID = System.getenv("TWILIO_TEST_RECORDING_SID");
     
     @Test
     public void testRecordingDownloadAndSpeechToText() {

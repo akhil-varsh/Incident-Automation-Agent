@@ -11,9 +11,9 @@ import java.util.Base64;
  */
 public class StandaloneSpeechTest {
     
-    private static final String ACCOUNT_SID = "AC08854d517d4c0ba1775cec4e96b47fa0";
-    private static final String AUTH_TOKEN = "5db62c4294b8f20b94f8357d913b26fd";
-    private static final String RECORDING_SID = "REed5dea99b50be6b30ec9836e7af1f281";
+    private static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    private static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
+    private static final String RECORDING_SID = System.getenv("TWILIO_TEST_RECORDING_SID");
     
     public static void main(String[] args) {
         System.out.println("=== Standalone Speech-to-Text Test ===");

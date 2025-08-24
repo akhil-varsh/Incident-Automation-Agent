@@ -13,12 +13,12 @@ import java.util.Base64;
  */
 public class TwilioRecordingDownloadTest {
     
-    // Replace these with your actual Twilio credentials
-    private static final String ACCOUNT_SID = "AC08854d517d4c0ba1775cec4e96b47fa0";
-    private static final String AUTH_TOKEN = "5db62c4294b8f20b94f8357d913b26fd";
+    // Load credentials from environment variables
+    private static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    private static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     
     // Use a valid recording SID from TwilioRecordingListTest output
-    private static final String TEST_RECORDING_SID = "REed5dea99b50be6b30ec9836e7af1f281"; // Valid 12-second recording
+    private static final String TEST_RECORDING_SID = System.getenv("TWILIO_TEST_RECORDING_SID"); // Set this in your .env file
     
     public static void main(String[] args) {
         System.out.println("=== Twilio Recording Download Test ===");

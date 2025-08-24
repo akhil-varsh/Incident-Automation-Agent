@@ -35,7 +35,7 @@ spring:
   # AI Configuration (Using Groq)
   ai:
     openai:
-      api-key: ${GROQ_API_KEY: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}
+      api-key: ${GROQ_API_KEY:}
       base-url: ${GROQ_BASE_URL:https://api.groq.com/openai}
       chat:
         options:
@@ -50,17 +50,17 @@ spring:
 # External Integration Configuration
 integrations:
   slack:
-    bot-token: ${SLACK_BOT_TOKEN:xoxb-9374380368501-9370386972787-9dGDLysOuUEght5LlLYLTKN4}
-    signing-secret: ${SLACK_SIGNING_SECRET:eac2d3a2828dbcd8238a3004ec54ca5c}
+    bot-token: ${SLACK_BOT_TOKEN:}
+    signing-secret: ${SLACK_SIGNING_SECRET:}
     enabled: ${SLACK_ENABLED:true}
     default-stakeholders:
       - "devops-team"
       - "incident-response"
     
   jira:
-    base-url: ${JIRA_BASE_URL:https://akhilvarshpettem.atlassian.net}
-    email: ${JIRA_EMAIL:your-akhilvarshpettem@gmail.com}
-    api-token: ${JIRA_API_TOKEN:ATATT3xFfGF0G9MldT1InW1iFkNTC4gW39YOwF8g8vG7T6Gi3BYRUXq41PVOJ5Rb0CNx6e8YZydfSbMm9zFdnCEbDeNGSJekawKuEL3RvpX47I6_TMK6e5ONGZiA8_AK}
+    base-url: ${JIRA_BASE_URL:}
+    email: ${JIRA_EMAIL:}
+    api-token: ${JIRA_API_TOKEN:}
     project-key: ${JIRA_PROJECT_KEY:PREP}
     enabled: ${JIRA_ENABLED:true}
     priority-mapping:
@@ -69,8 +69,8 @@ integrations:
       HIGH: "Critical"
   
   vonage:
-    api-key: ${VONAGE_API_KEY:d236b970}
-    api-secret: ${VONAGE_API_SECRET:7A9VRUMBbBhCWGAu}
+    api-key: ${VONAGE_API_KEY:}
+    api-secret: ${VONAGE_API_SECRET:}
     phone-number: ${VONAGE_PHONE_NUMBER:+12345678901}
     enabled: ${VONAGE_ENABLED:false}
     webhook-base-url: ${VONAGE_WEBHOOK_BASE_URL:https://your-domain.com}
@@ -79,12 +79,12 @@ integrations:
       max-duration-seconds: ${VONAGE_MAX_DURATION:300}
   
   twilio:
-    account-sid: ${TWILIO_ACCOUNT_SID:AC08854d517d4c0ba1775cec4e96b47fa0}
-    auth-token: ${TWILIO_AUTH_TOKEN:5db62c4294b8f20b94f8357d913b26fd}
-    phone-number: ${TWILIO_PHONE_NUMBER:+18723501845}
-    twiml-app-sid: ${TWILIO_TWIML_APP_SID:AP6b19bd3d0346c2ac2bec85e9dbab3365}
+    account-sid: ${TWILIO_ACCOUNT_SID:}
+    auth-token: ${TWILIO_AUTH_TOKEN:}
+    phone-number: ${TWILIO_PHONE_NUMBER:}
+    twiml-app-sid: ${TWILIO_TWIML_APP_SID:}
     enabled: ${TWILIO_ENABLED:true}
-    webhook-base-url: ${TWILIO_WEBHOOK_BASE_URL:https://amazingly-assured-asp.ngrok-free.app}
+    webhook-base-url: ${TWILIO_WEBHOOK_BASE_URL:}
     recording:
       timeout-seconds: ${TWILIO_RECORDING_TIMEOUT:30}
       max-duration-seconds: ${TWILIO_MAX_DURATION:300}
@@ -104,7 +104,7 @@ google:
 
 # Deepgram Speech-to-Text Configuration (Fallback)
 deepgram:
-  api-key: ${DEEPGRAM_API_KEY:1bbfaddf940c9778bac6648bbe7058ece427edef}
+  api-key: ${DEEPGRAM_API_KEY:}
   api-url: ${DEEPGRAM_API_URL:https://api.deepgram.com/v1/listen}
 
 # Knowledge Base Configuration

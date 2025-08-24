@@ -12,8 +12,8 @@ import java.util.Base64;
  */
 public class TwilioRecordingListTest {
     
-    private static final String ACCOUNT_SID = "AC08854d517d4c0ba1775cec4e96b47fa0";
-    private static final String AUTH_TOKEN = "5db62c4294b8f20b94f8357d913b26fd";
+    private static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    private static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     
     public static void main(String[] args) {
         System.out.println("=== Twilio Recording List Test ===");

@@ -60,6 +60,12 @@ Thumbs.db
 .env.production
 .env.example
 
+# Google Cloud Service Account Keys
+*.json
+*-service-account.json
+*-stt-*.json
+service-account-keys/
+
 # Docker
 .docker/
 

@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: incident_db
       POSTGRES_USER: incident_user
-      POSTGRES_PASSWORD: secure_password
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password}
     ports:
       - "5432:5432"
     volumes:
@@ -81,7 +81,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=incident_db
       - DB_USER=incident_user
-      - DB_PASSWORD=secure_password
+      - DB_PASSWORD=${DB_PASSWORD:-secure_password}
       
       # Redis Configuration
       - REDIS_HOST=redis
