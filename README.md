@@ -1,4 +1,4 @@
-# XLBiz Incident Automation Agent
+# Incident Automation Agent
 
 An AI-powered incident management system that automates the entire incident lifecycle from reporting to resolution. The system accepts incident reports through multiple channels (REST API, voice calls) and automatically processes them using AI classification, creates Slack channels and sends messages, and provides intelligent suggestions based on Ai Classification/knowledge base.
 
