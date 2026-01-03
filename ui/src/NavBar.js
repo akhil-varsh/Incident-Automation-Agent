@@ -10,7 +10,7 @@ export default function NavBar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            XLBiz Incident Automation
+           Incident Automation
           </Typography>
         </Toolbar>
       </AppBar>

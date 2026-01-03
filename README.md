@@ -4,7 +4,7 @@ An AI-powered incident management system that automates the entire incident life
 
 ## 🏗️ System Architecture
 
-![System Architecture](./docs/sysarch.png)
+![System Architecture](./docs/system_architecture.png)
 
 *RAG-first architecture achieving 70% cost reduction and sub-200ms response times for 70% of incidents*
 
@@ -49,216 +49,125 @@ An AI-powered incident management system that automates the entire incident life
 
 ## 🏗️ Component Overview
 
-- **Spring Boot Application**: Central orchestrator with REST API endpoints
-- **AI Classification Service**: Groq LLM integration for intelligent incident analysis  
-- **Vector Knowledge Base**: ChromaDB with Ollama embeddings for similarity search
+- **Flask Application**: Central orchestrator with REST API endpoints (Blueprints)
+- **Celery with Redis**: Asynchronous task queue for Incident, Voice, and AI processing
+- **Groq AI Service**: High-performance LLM (gpt-oss-20b) for incident classification
+- **Vector Knowledge Base**: ChromaDB with local embeddings
 - **Voice Integration**: Twilio APIs with Google Cloud Speech-to-Text
 - **Enterprise Integrations**: Slack channels, Jira tickets, and real-time notifications
-- **React Dashboard**: Modern UI for incident management and monitoring
-- **Multi-Database Architecture**: PostgreSQL (primary), ChromaDB (vectors)
+- **Multi-Database Architecture**: PostgreSQL (primary), ChromaDB (vectors), Redis (broker)
 
 ## 🛠️ Implemented Tools & APIs
 
 ### 🎯 Core Incident Management
-- **Incident Creation API**: `POST /api/v1/incidents` - Create new incidents with automatic AI classification
-- **Incident Retrieval**: `GET /api/v1/incidents` - List all incidents with filtering and pagination
-- **Incident Details**: `GET /api/v1/incidents/{id}` - Get detailed incident information
-- **Status Updates**: Real-time incident status tracking and notifications
+- **Incident Creation API**: `POST /api/v1/incidents` - Async creation (returns 202 Accepted)
+- **Incident Retrieval**: `GET /api/v1/incidents` - List all incidents with filtering
+- **Incident Details**: `GET /api/v1/incidents/{id}/status` - Get detailed incident status
+- **Status Updates**: Real-time status tracking
 
 ### 🤖 AI & Machine Learning
-- **Groq LLM Integration**: Advanced language model for incident classification and analysis
-- **AI Classification Service**: Automatic severity assessment with confidence scoring
-- **Intelligent Suggestions**: Context-aware remediation recommendations
-- **Ollama Embeddings**: Local embedding generation for vector similarity search
-- **ChromaDB Vector Store**: Semantic search across incident knowledge base
-- **Knowledge Base Management**: Store and retrieve solutions from past incidents
+- **Groq API Integration**: gpt-oss-20b for sub-second classification
+- **RAG Optimization**: 70% cost reduction by skipping LLM for high-confidence matches (>0.85) (Zero-Shot)
+- **LangChain**: Orchestration for RAG and Prompt chaining
+- **ChromaDB Vector Store**: Semantic search for historical incidents
 
 ### 📞 Voice & Communication
-- **Twilio Voice Integration**: 
+- **Twilio Voice Integration**:
   - Inbound call handling with speech-to-text
   - Outbound notification calls with DTMF support
-  - Call recording and transcription
-  - Interactive voice response (IVR) system
 - **Google Cloud Speech-to-Text**: High-accuracy voice transcription
-- **Voice Call Analytics**: Call duration, success rates, and quality metrics
 
 ### 🔗 Enterprise Integrations
 - **Slack Integration**:
-  - Automatic channel creation for incidents
-  - Real-time notifications to stakeholders
-  - Incident status updates and threading
-  - Custom message formatting with severity indicators
+  - Automatic channel creation (`#incident-ID`)
+  - Real-time notifications and updates
 - **Jira Integration**:
-  - Automatic ticket creation with proper priority mapping
-  - Bidirectional status synchronization
-  - Custom field mapping and project configuration
-  - Attachment and comment synchronization
+  - Automatic ticket creation
+  - Priority mapping (HIGH -> Highest)
 
-### 📊 User Interface
-- **React Dashboard**: Modern web interface built with Material-UI
-- **Incident Management Panel**: Create, view, and manage incidents
-- **Outbound Call Center**: Interface for making notification calls
-- **Knowledge Base Browser**: Search and manage incident solutions
-- **Real-time Updates**: Live incident status and metrics
-- **Responsive Design**: Mobile-friendly interface
-
-### 🗄️ Data Management
-- **PostgreSQL Database**: Primary data storage with JSONB support
-- **Flyway Migrations**: Database schema versioning and updates
-- **ChromaDB Vector Database**: Semantic search and similarity matching
-- **Data Export/Import**: Backup and restore capabilities
-
-### 🔍 Monitoring & Analytics
-- **Health Check Endpoints**: System status and component health monitoring
-- **Actuator Integration**: Spring Boot metrics and monitoring
-- **Prometheus Metrics**: Performance and usage statistics
-- **Audit Logging**: Complete incident lifecycle tracking
-- **Error Handling**: Comprehensive error reporting and recovery
-
-### 🔧 Development & Testing Tools
-- **End-to-End Testing**: Automated incident workflow testing
-- **Integration Tests**: Component interaction validation
-- **Mock Services**: WireMock for external API testing
-- **TestContainers**: Isolated database testing
-- **Docker Compose**: Multi-service development environment
-
-### 🌐 API Endpoints
-
-#### Incident Management
-```
-POST   /api/v1/incidents              - Create incident
-GET    /api/v1/incidents              - List incidents
-GET    /api/v1/incidents/{id}         - Get incident details
-PUT    /api/v1/incidents/{id}         - Update incident
-DELETE /api/v1/incidents/{id}         - Delete incident
-```
-
-#### Voice Integration
-```
-POST   /api/voice/test                - Test voice processing
-GET    /api/voice/health              - Voice system health
-POST   /api/twilio/webhook            - Twilio webhook handler
-POST   /api/twilio/outbound/call/incident-notification - Make outbound call
-POST   /api/twilio/outbound/call/incident-update       - Send incident update
-```
-
-#### Knowledge Base
-```
-GET    /api/knowledge/search          - Search knowledge base
-POST   /api/knowledge/entries         - Add knowledge entry
-GET    /api/knowledge/entries/{id}    - Get knowledge entry
-PUT    /api/knowledge/entries/{id}    - Update knowledge entry
-```
-
-#### System Health
-```
-GET    /actuator/health               - Application health
-GET    /actuator/metrics              - System metrics
-GET    /actuator/info                 - Application info
-```
+### 📊 Monitoring & Analytics
+- **Health Check**: `GET /api/health`
+- **Dashboard Stats**: `GET /api/v1/incidents/stats`
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **WSL2** (Windows) or **Linux/macOS**
-- **Java 17+**, **Maven 3.8+**, **Docker**
+- **Python 3.10+**
+- **Redis** and **PostgreSQL** (or SQLite for dev)
+- **Groq API Key**
 
 ### 1. Setup Environment
 ```bash
 # Clone repository
-git clone <your-repo-url> && cd biz
+git clone <your-repo-url> && cd incident-agent
 
-# Install dependencies (WSL/Ubuntu)
-sudo apt install openjdk-17-jdk maven docker.io docker-compose -y
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Start Docker
-sudo service docker start
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### 2. Configure Services
 Create `.env` file:
 ```bash
-# Required - AI & Database
-GROQ_API_KEY=your_groq_api_key
-DB_PASSWORD=secure_password
+# Core
+FLASK_APP=app.py
+DATABASE_URL=sqlite:///incident.db # Or postgresql://...
 
-# Optional - Integrations  
-SLACK_BOT_TOKEN=xoxb-your-token
-JIRA_API_TOKEN=your-jira-token
-TWILIO_AUTH_TOKEN=your-twilio-token
+# AI & Integrations
+GROQ_API_KEY=gsk_...
+OPENAI_API_KEY=sk-... (Optional fallback)
+SLACK_BOT_TOKEN=xoxb-...
+JIRA_URL=https://your-domain.atlassian.net
+JIRA_USER=user@example.com
+JIRA_API_TOKEN=token...
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=token...
 ```
 
 ### 3. Run Application
 ```bash
-# Start services
-docker-compose up -d
+# Initialize Database
+flask db init && flask db migrate && flask db upgrade
 
-# Build & run
-mvn clean package && mvn spring-boot:run
+# Start Redis (in separate terminal)
+redis-server
+
+# Start Celery Worker (for async tasks)
+celery -A celery_worker.celery worker --loglevel=info
+
+# Start Flask Server
+flask run --port 8080
 ```
-
-**🌐 Access:** `http://localhost:8080`
 
 ### 4. Test Integration
 ```bash
-# Test incident creation
+# Create Incident
 curl -X POST "http://localhost:8080/api/v1/incidents" \
   -H "Content-Type: application/json" \
-  -d '{"id":"TEST-001","type":"DATABASE_ERROR","description":"Test incident"}'
-
-# Check health
-curl http://localhost:8080/actuator/health
+  -d '{"id":"TEST-PY-01","type":"DATABASE_ERROR","description":"Connection timeout"}'
 ```
-
-> **💡 Full setup guide:** See [SETUP.md](./SETUP.md) for detailed configuration
 
 ## 💻 Technology Stack
 
 ### Backend Technologies
-- **Java 17**: Modern Java with enhanced performance and features
-- **Spring Boot 3.2.1**: Enterprise-grade application framework
-- **Spring AI**: AI integration framework with Groq LLM support
-- **Spring Data JPA**: Database abstraction and ORM
-- **Spring WebFlux**: Reactive programming for async operations
-- **Maven 3.8+**: Build automation and dependency management
+- **Python 3.10**: Core language
+- **Flask**: Lightweight WSGI web application framework
+- **Celery**: Distributed task queue
+- **SQLAlchemy**: ORM for database interaction
+- **Pydantic**: Data validation and settings management
 
-### Databases & Storage
-- **PostgreSQL 15**: Primary relational database with JSONB support
-- **ChromaDB 0.4.24**: Vector database for AI embeddings and similarity search
-- **Ollama**: Local embedding generation service using nomic-embed-text:v1.5
-- **Flyway**: Database migration and versioning
+### Databases
+- **PostgreSQL**: Primary data storage
+- **Redis**: Message broker for Celery
+- **ChromaDB**: Vector store for RAG
 
 ### AI & Machine Learning
-- **Groq API**: High-performance LLM for incident classification
-- **OpenAI-Compatible API**: Flexible AI service integration
-- **ChromaDB Embeddings**: Vector similarity search
-- **Ollama Embeddings**: Local embedding generation
-- **Spring AI Framework**: Unified AI service abstraction
+- **Groq**: High-speed inference engine
+- **LangChain**: Framework for LLM applications
 
-### Communication & Integration
-- **Twilio API**: Voice calls, SMS, and webhook handling
-- **Slack API Client**: Real-time messaging and channel management
-- **Google Cloud Speech-to-Text**: High-accuracy voice transcription
-- **Deepgram API**: Alternative speech-to-text service
-
-### Frontend Technologies
-- **React 18.2.0**: Modern JavaScript UI framework
-- **Material-UI (MUI) 5.15.0**: Professional React component library
-- **Create React App**: Build tooling and development server
-- **Responsive Design**: Mobile-friendly interface
-
-### DevOps & Infrastructure
-- **Docker & Docker Compose**: Containerization and orchestration
-- **WSL2**: Windows Subsystem for Linux development environment
-- **ngrok**: Webhook tunneling for local development
-- **TestContainers**: Integration testing with real databases
-- **WireMock**: HTTP service mocking for tests
-
-### Monitoring & Observability
-- **Spring Boot Actuator**: Health checks and metrics
-- **Prometheus**: Metrics collection and monitoring
-- **Structured Logging**: JSON-formatted logs with correlation IDs
-- **Error Tracking**: Comprehensive error handling and reporting
 
 ## 📖 Usage Examples
 

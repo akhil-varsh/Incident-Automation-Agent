@@ -64,15 +64,15 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 60s
+      retries: 10
+      start_period: 120s
 
   # Incident Automation Agent Application
   incident-agent:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: incident-agent
+    container_name: incident-agent-new
     ports:
       - "8080:8080"
     environment:
@@ -119,23 +119,12 @@ services:
       - TWILIO_RECORDING_TIMEOUT=${TWILIO_RECORDING_TIMEOUT:-30}
       - TWILIO_MAX_DURATION=${TWILIO_MAX_DURATION:-300}
       
-      # Vonage Voice Integration
-      - VONAGE_API_KEY=${VONAGE_API_KEY}
-      - VONAGE_API_SECRET=${VONAGE_API_SECRET}
-      - VONAGE_PHONE_NUMBER=${VONAGE_PHONE_NUMBER}
-      - VONAGE_WEBHOOK_BASE_URL=${VONAGE_WEBHOOK_BASE_URL}
-      - VONAGE_ENABLED=${VONAGE_ENABLED:-false}
-      - VONAGE_RECORDING_TIMEOUT=${VONAGE_RECORDING_TIMEOUT:-30}
-      - VONAGE_MAX_DURATION=${VONAGE_MAX_DURATION:-300}
-      
       # Google Cloud Speech-to-Text
       - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
       - GOOGLE_SPEECH_LANGUAGE_CODE=${GOOGLE_SPEECH_LANGUAGE_CODE:-en-US}
       - GOOGLE_SPEECH_MODEL=${GOOGLE_SPEECH_MODEL:-latest_long}
       
-      # Deepgram Speech-to-Text (Fallback)
-      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
       
       # Ollama Configuration
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}

@@ -1,0 +1,421 @@
+# Incident Knowledge Dataset - 50 Real-World IT Incidents
+
+## Database Incidents
+
+1. **PostgreSQL Connection Pool Exhausted**
+   Category: DATABASE_CONNECTION_ERROR
+   Severity: HIGH
+   Symptoms: Application throwing "connection pool exhausted" errors, users unable to login, database connections at maximum limit
+   Root Cause: High traffic spike combined with long-running queries holding connections, inadequate connection pool sizing
+   Solution: 1. Kill long-running queries 2. Increase connection pool size 3. Implement connection timeout 4. Add connection monitoring 5. Optimize slow queries
+   Tags: postgresql, connection-pool, performance, database
+
+2. **MySQL Deadlock Storm**
+   Category: DATABASE_DEADLOCK
+   Severity: MEDIUM
+   Symptoms: Multiple transactions failing with deadlock errors, application retries failing, database performance degraded
+   Root Cause: Concurrent transactions accessing same tables in different order, inadequate indexing causing lock escalation
+   Solution: 1. Identify deadlock patterns from logs 2. Reorder transaction operations 3. Add proper indexes 4. Implement retry logic with exponential backoff 5. Consider row-level locking
+   Tags: mysql, deadlock, transactions, concurrency
+
+3. **MongoDB Replica Set Primary Down**
+   Category: DATABASE_OUTAGE
+   Severity: CRITICAL
+   Symptoms: Write operations failing, application in read-only mode, replica set election in progress
+   Root Cause: Primary node hardware failure, network partition causing split-brain scenario
+   Solution: 1. Check replica set status 2. Force election if needed 3. Investigate primary node failure 4. Update connection strings if needed 5. Monitor replication lag
+   Tags: mongodb, replica-set, failover, high-availability
+
+4. **Redis Memory Limit Reached**
+   Category: CACHE_MEMORY_FULL
+   Severity: HIGH
+   Symptoms: Cache writes failing, application performance degraded, Redis evicting keys unexpectedly
+   Root Cause: Memory usage exceeded maxmemory setting, inadequate eviction policy, memory leaks in cached data
+   Solution: 1. Increase Redis memory limit 2. Configure appropriate eviction policy 3. Clear unnecessary keys 4. Implement TTL for cached data 5. Monitor memory usage
+   Tags: redis, memory, cache, eviction-policy
+
+5. **Oracle Tablespace Full**
+   Category: DATABASE_STORAGE_FULL
+   Severity: HIGH
+   Symptoms: INSERT operations failing with "tablespace full" error, application unable to save data
+   Root Cause: Rapid data growth, inadequate storage monitoring, missing tablespace auto-extend configuration
+   Solution: 1. Add datafiles to tablespace 2. Enable auto-extend 3. Archive old data 4. Implement storage monitoring 5. Plan capacity expansion
+   Tags: oracle, tablespace, storage, capacity-planning
+
+## Network & Infrastructure Incidents
+
+6. **DDoS Attack on API Gateway**
+   Category: DDOS_ATTACK
+   Severity: CRITICAL
+   Symptoms: API response times extremely high, legitimate traffic being dropped, bandwidth saturation
+   Root Cause: Coordinated DDoS attack from multiple IP ranges targeting public endpoints
+   Solution: 1. Enable DDoS protection 2. Implement rate limiting 3. Block malicious IPs 4. Scale infrastructure 5. Contact ISP for upstream filtering
+   Tags: ddos, api-gateway, security, rate-limiting
+
+7. **DNS Resolution Failure**
+   Category: DNS_FAILURE
+   Severity: HIGH
+   Symptoms: Services unable to resolve domain names, intermittent connectivity issues, timeouts
+   Root Cause: DNS server failure, misconfigured DNS records, DNS cache poisoning
+   Solution: 1. Check DNS server status 2. Verify DNS records 3. Flush DNS cache 4. Switch to backup DNS 5. Update DNS configuration
+   Tags: dns, networking, connectivity, resolution
+
+8. **Load Balancer Health Check Failing**
+   Category: LOAD_BALANCER_FAILURE
+   Severity: HIGH
+   Symptoms: Traffic not distributed evenly, some servers receiving no traffic, health check endpoints returning errors
+   Root Cause: Misconfigured health check endpoints, application startup issues, network connectivity problems
+   Solution: 1. Check health check configuration 2. Verify endpoint accessibility 3. Review application logs 4. Test network connectivity 5. Update health check parameters
+   Tags: load-balancer, health-check, traffic-distribution, networking
+
+9. **SSL Certificate Expired**
+   Category: SSL_CERTIFICATE_EXPIRED
+   Severity: HIGH
+   Symptoms: Browser security warnings, API calls failing with SSL errors, users unable to access secure pages
+   Root Cause: SSL certificate reached expiration date, automated renewal failed, certificate not updated
+   Solution: 1. Renew SSL certificate immediately 2. Update certificate on servers 3. Verify certificate chain 4. Set up automated renewal 5. Monitor certificate expiration
+   Tags: ssl, certificate, security, https, expiration
+
+10. **Network Latency Spike**
+    Category: NETWORK_LATENCY
+    Severity: MEDIUM
+    Symptoms: Slow page load times, API timeouts, user complaints about performance
+    Root Cause: Network congestion, routing issues, ISP problems, geographic distance
+    Solution: 1. Check network monitoring tools 2. Test connectivity from multiple locations 3. Contact ISP if needed 4. Implement CDN 5. Optimize network routes
+    Tags: network, latency, performance, routing, cdn
+
+## Application & Performance Incidents
+
+11. **Memory Leak in Java Application**
+    Category: MEMORY_LEAK
+    Severity: HIGH
+    Symptoms: Gradually increasing memory usage, OutOfMemoryError exceptions, application crashes, GC pressure
+    Root Cause: Objects not being garbage collected, unclosed resources, static collections growing indefinitely
+    Solution: 1. Generate heap dump 2. Analyze with profiling tools 3. Identify leak sources 4. Fix resource management 5. Restart application as temporary fix
+    Tags: java, memory-leak, garbage-collection, profiling, heap-dump
+
+12. **High CPU Usage on Web Server**
+    Category: HIGH_CPU
+    Severity: MEDIUM
+    Symptoms: Server CPU consistently above 90%, slow response times, request queuing, potential timeouts
+    Root Cause: Inefficient algorithms, infinite loops, excessive concurrent processing, inadequate resource allocation
+    Solution: 1. Identify CPU-intensive processes 2. Profile application code 3. Optimize algorithms 4. Scale horizontally 5. Implement CPU throttling
+    Tags: cpu, performance, profiling, optimization, scaling
+
+13. **Application Startup Failure**
+    Category: APPLICATION_STARTUP_FAILURE
+    Severity: CRITICAL
+    Symptoms: Application fails to start, dependency injection errors, configuration validation failures
+    Root Cause: Missing configuration values, database connectivity issues, dependency service unavailable
+    Solution: 1. Check application logs 2. Verify configuration 3. Test database connectivity 4. Ensure dependencies are running 5. Validate environment variables
+    Tags: startup, configuration, dependencies, application-lifecycle
+
+14. **Session Store Corruption**
+    Category: SESSION_STORE_CORRUPTION
+    Severity: MEDIUM
+    Symptoms: Users being logged out randomly, session data lost, authentication errors
+    Root Cause: Session store database corruption, Redis cluster issues, serialization problems
+    Solution: 1. Clear corrupted sessions 2. Restart session store 3. Check serialization format 4. Implement session backup 5. Monitor session store health
+    Tags: session, authentication, redis, serialization, user-experience
+
+15. **API Rate Limit Exceeded**
+    Category: API_RATE_LIMIT_EXCEEDED
+    Severity: MEDIUM
+    Symptoms: API returning 429 Too Many Requests, client applications failing, legitimate traffic being throttled
+    Root Cause: Traffic spike, misconfigured rate limits, bot traffic, inadequate rate limiting strategy
+    Solution: 1. Analyze traffic patterns 2. Adjust rate limits 3. Implement intelligent throttling 4. Block bot traffic 5. Scale API infrastructure
+    Tags: api, rate-limiting, throttling, traffic-management
+
+## Security Incidents
+
+16. **Unauthorized Access Attempt**
+    Category: UNAUTHORIZED_ACCESS
+    Severity: HIGH
+    Symptoms: Multiple failed login attempts, suspicious IP addresses, brute force attack patterns
+    Root Cause: Credential stuffing attack, weak passwords, compromised user accounts
+    Solution: 1. Block suspicious IPs 2. Force password resets 3. Enable MFA 4. Implement account lockout 5. Monitor access patterns
+    Tags: security, brute-force, authentication, access-control
+
+17. **SQL Injection Attack Detected**
+    Category: SQL_INJECTION
+    Severity: CRITICAL
+    Symptoms: Unusual database queries in logs, data extraction attempts, application errors from malformed queries
+    Root Cause: Unvalidated user input, lack of parameterized queries, insufficient input sanitization
+    Solution: 1. Block malicious requests 2. Review and fix vulnerable code 3. Implement input validation 4. Use parameterized queries 5. Deploy WAF rules
+    Tags: sql-injection, security, database, input-validation, waf
+
+18. **Data Breach Suspected**
+    Category: DATA_BREACH
+    Severity: CRITICAL
+    Symptoms: Unusual data access patterns, large data exports, unauthorized file downloads
+    Root Cause: Compromised user account, insider threat, application vulnerability exploitation
+    Solution: 1. Isolate affected systems 2. Change all credentials 3. Audit access logs 4. Notify security team 5. Prepare breach notification
+    Tags: data-breach, security, incident-response, forensics, compliance
+
+19. **Malware Detection on Server**
+    Category: MALWARE_DETECTION
+    Severity: CRITICAL
+    Symptoms: Antivirus alerts, unusual network traffic, system performance degradation, suspicious processes
+    Root Cause: Malware infection through compromised software, phishing attack, unpatched vulnerabilities
+    Solution: 1. Isolate infected server 2. Run full system scan 3. Remove malware 4. Patch vulnerabilities 5. Restore from clean backup
+    Tags: malware, security, antivirus, isolation, system-recovery
+
+20. **Privilege Escalation Detected**
+    Category: PRIVILEGE_ESCALATION
+    Severity: HIGH
+    Symptoms: Users accessing resources beyond their permissions, admin actions from non-admin accounts
+    Root Cause: Application vulnerability, misconfigured permissions, compromised admin account
+    Solution: 1. Revoke elevated permissions 2. Audit permission assignments 3. Fix application vulnerabilities 4. Reset compromised accounts 5. Implement least privilege
+    Tags: privilege-escalation, security, permissions, access-control
+
+## Cloud & Infrastructure Incidents
+
+21. **AWS EC2 Instance Failure**
+    Category: CLOUD_INSTANCE_FAILURE
+    Severity: HIGH
+    Symptoms: Instance unreachable, health checks failing, application unavailable
+    Root Cause: Hardware failure, instance retirement, availability zone issues
+    Solution: 1. Check instance status 2. Launch replacement instance 3. Update load balancer 4. Restore from AMI 5. Implement auto-scaling
+    Tags: aws, ec2, cloud, instance-failure, auto-scaling
+
+22. **Kubernetes Pod CrashLoopBackOff**
+    Category: KUBERNETES_POD_FAILURE
+    Severity: MEDIUM
+    Symptoms: Pods continuously restarting, application unavailable, resource limits exceeded
+    Root Cause: Application startup failure, resource constraints, configuration errors
+    Solution: 1. Check pod logs 2. Verify resource limits 3. Fix configuration issues 4. Update deployment 5. Scale cluster if needed
+    Tags: kubernetes, pod, crashloop, container, orchestration
+
+23. **Docker Container Out of Memory**
+    Category: CONTAINER_OOM
+    Severity: MEDIUM
+    Symptoms: Container killed by OOM killer, application restarts, memory usage spikes
+    Root Cause: Insufficient memory limits, memory leaks, resource-intensive operations
+    Solution: 1. Increase memory limits 2. Optimize application memory usage 3. Implement memory monitoring 4. Fix memory leaks 5. Scale horizontally
+    Tags: docker, container, memory, oom-killer, resource-limits
+
+24. **Cloud Storage Quota Exceeded**
+    Category: STORAGE_QUOTA_EXCEEDED
+    Severity: MEDIUM
+    Symptoms: File uploads failing, backup operations failing, storage write errors
+    Root Cause: Rapid data growth, inadequate quota monitoring, large file uploads
+    Solution: 1. Increase storage quota 2. Clean up old files 3. Implement data archiving 4. Monitor storage usage 5. Optimize file storage
+    Tags: cloud-storage, quota, capacity-planning, data-management
+
+25. **CDN Cache Poisoning**
+    Category: CDN_CACHE_POISONING
+    Severity: HIGH
+    Symptoms: Users receiving incorrect content, cached errors being served, content inconsistency
+    Root Cause: Malicious cache poisoning attack, misconfigured cache headers, upstream server issues
+    Solution: 1. Purge CDN cache 2. Fix cache headers 3. Implement cache validation 4. Monitor cache hit rates 5. Review CDN configuration
+    Tags: cdn, cache-poisoning, content-delivery, security
+
+## Monitoring & Alerting Incidents
+
+26. **Monitoring System Down**
+    Category: MONITORING_FAILURE
+    Severity: HIGH
+    Symptoms: No alerts being received, dashboards showing no data, monitoring agents offline
+    Root Cause: Monitoring server failure, network connectivity issues, agent configuration problems
+    Solution: 1. Check monitoring server status 2. Restart monitoring services 3. Verify network connectivity 4. Update agent configuration 5. Implement monitoring redundancy
+    Tags: monitoring, alerting, observability, infrastructure
+
+27. **Alert Storm from Cascading Failure**
+    Category: ALERT_STORM
+    Severity: MEDIUM
+    Symptoms: Hundreds of alerts firing simultaneously, alert fatigue, important alerts missed
+    Root Cause: Cascading failure triggering multiple dependent alerts, misconfigured alert thresholds
+    Solution: 1. Acknowledge duplicate alerts 2. Fix root cause 3. Implement alert correlation 4. Adjust alert thresholds 5. Create alert dependencies
+    Tags: alerting, alert-storm, monitoring, correlation
+
+28. **Log Aggregation System Failure**
+    Category: LOG_AGGREGATION_FAILURE
+    Severity: MEDIUM
+    Symptoms: Logs not being collected, search functionality unavailable, missing audit trail
+    Root Cause: Log aggregation server failure, disk space issues, network connectivity problems
+    Solution: 1. Check log aggregation server 2. Clear disk space 3. Restart log services 4. Verify network connectivity 5. Implement log retention policies
+    Tags: logging, log-aggregation, disk-space, observability
+
+29. **Metrics Collection Failure**
+    Category: METRICS_COLLECTION_FAILURE
+    Severity: MEDIUM
+    Symptoms: Dashboards showing stale data, metrics not updating, performance monitoring gaps
+    Root Cause: Metrics collector failure, database connectivity issues, configuration problems
+    Solution: 1. Restart metrics collector 2. Check database connectivity 3. Verify configuration 4. Clear metric backlogs 5. Implement metrics redundancy
+    Tags: metrics, monitoring, dashboards, performance
+
+30. **Backup System Failure**
+    Category: BACKUP_FAILURE
+    Severity: HIGH
+    Symptoms: Backup jobs failing, no recent backups available, backup verification errors
+    Root Cause: Storage issues, backup software failure, network connectivity problems
+    Solution: 1. Check backup storage 2. Restart backup services 3. Verify network connectivity 4. Test backup restoration 5. Implement backup monitoring
+    Tags: backup, disaster-recovery, storage, data-protection
+
+## Integration & API Incidents
+
+31. **Third-Party API Timeout**
+    Category: API_TIMEOUT
+    Severity: MEDIUM
+    Symptoms: External API calls timing out, dependent features unavailable, user experience degraded
+    Root Cause: Third-party service issues, network latency, inadequate timeout configuration
+    Solution: 1. Check third-party service status 2. Implement retry logic 3. Adjust timeout values 4. Add circuit breaker 5. Implement fallback mechanism
+    Tags: api, timeout, third-party, integration, circuit-breaker
+
+32. **Message Queue Backlog**
+    Category: MESSAGE_QUEUE_BACKLOG
+    Severity: MEDIUM
+    Symptoms: Messages accumulating in queue, processing delays, consumer lag increasing
+    Root Cause: Consumer processing slower than producer rate, consumer failures, resource constraints
+    Solution: 1. Scale consumers 2. Optimize message processing 3. Check consumer health 4. Implement dead letter queue 5. Monitor queue metrics
+    Tags: message-queue, backlog, consumer, producer, scaling
+
+33. **Webhook Delivery Failure**
+    Category: WEBHOOK_FAILURE
+    Severity: MEDIUM
+    Symptoms: Webhook deliveries failing, partner integrations broken, event notifications not sent
+    Root Cause: Endpoint unavailability, authentication issues, payload format problems
+    Solution: 1. Check endpoint availability 2. Verify authentication 3. Validate payload format 4. Implement retry mechanism 5. Monitor webhook success rates
+    Tags: webhook, integration, delivery, authentication, retry
+
+34. **OAuth Token Expiration**
+    Category: OAUTH_TOKEN_EXPIRED
+    Severity: MEDIUM
+    Symptoms: API calls returning 401 unauthorized, integration features failing, authentication errors
+    Root Cause: OAuth tokens expired, refresh token invalid, token renewal process failed
+    Solution: 1. Refresh OAuth tokens 2. Re-authenticate if needed 3. Implement automatic token renewal 4. Monitor token expiration 5. Handle token errors gracefully
+    Tags: oauth, authentication, token, api, integration
+
+35. **Data Synchronization Failure**
+    Category: DATA_SYNC_FAILURE
+    Severity: MEDIUM
+    Symptoms: Data inconsistency between systems, sync jobs failing, outdated information displayed
+    Root Cause: Network connectivity issues, API rate limits, data format changes
+    Solution: 1. Check sync job status 2. Verify network connectivity 3. Handle rate limits 4. Validate data formats 5. Implement conflict resolution
+    Tags: data-sync, integration, consistency, api, data-quality
+
+## Performance & Scalability Incidents
+
+36. **Database Query Performance Degradation**
+    Category: SLOW_QUERY_PERFORMANCE
+    Severity: MEDIUM
+    Symptoms: Page load times increasing, database CPU high, query execution times elevated
+    Root Cause: Missing indexes, query plan changes, data growth, statistics outdated
+    Solution: 1. Identify slow queries 2. Add missing indexes 3. Update statistics 4. Optimize query plans 5. Consider query rewriting
+    Tags: database, performance, query-optimization, indexing
+
+37. **Frontend Bundle Size Too Large**
+    Category: FRONTEND_PERFORMANCE
+    Severity: LOW
+    Symptoms: Slow initial page load, high bandwidth usage, poor mobile experience
+    Root Cause: Large JavaScript bundles, unoptimized assets, missing code splitting
+    Solution: 1. Analyze bundle size 2. Implement code splitting 3. Optimize assets 4. Enable compression 5. Use CDN for static assets
+    Tags: frontend, performance, bundle-size, optimization, cdn
+
+38. **Auto-Scaling Not Triggering**
+    Category: AUTO_SCALING_FAILURE
+    Severity: MEDIUM
+    Symptoms: High resource utilization, performance degradation, scaling policies not activating
+    Root Cause: Misconfigured scaling policies, insufficient permissions, metric collection issues
+    Solution: 1. Check scaling policies 2. Verify permissions 3. Test metric collection 4. Adjust scaling thresholds 5. Manual scaling if needed
+    Tags: auto-scaling, performance, resource-utilization, cloud
+
+39. **Cache Hit Rate Degradation**
+    Category: CACHE_PERFORMANCE
+    Severity: MEDIUM
+    Symptoms: Increased database load, slower response times, cache miss rate high
+    Root Cause: Cache eviction policy issues, cache size insufficient, cache key strategy problems
+    Solution: 1. Analyze cache metrics 2. Increase cache size 3. Optimize eviction policy 4. Review cache key strategy 5. Implement cache warming
+    Tags: cache, performance, hit-rate, optimization
+
+40. **Connection Pool Exhaustion**
+    Category: CONNECTION_POOL_EXHAUSTED
+    Severity: HIGH
+    Symptoms: New connections failing, application timeouts, database connection errors
+    Root Cause: High concurrent load, connection leaks, inadequate pool sizing
+    Solution: 1. Increase pool size 2. Fix connection leaks 3. Implement connection timeout 4. Monitor pool usage 5. Optimize connection usage
+    Tags: connection-pool, database, concurrency, resource-management
+
+## Business Logic & Data Incidents
+
+41. **Data Corruption in Production**
+    Category: DATA_CORRUPTION
+    Severity: CRITICAL
+    Symptoms: Incorrect data displayed, calculation errors, data integrity violations
+    Root Cause: Application bug, database corruption, failed migration, concurrent access issues
+    Solution: 1. Identify corruption scope 2. Stop writes to affected data 3. Restore from backup 4. Fix root cause 5. Implement data validation
+    Tags: data-corruption, data-integrity, backup-restore, validation
+
+42. **Payment Processing Failure**
+    Category: PAYMENT_FAILURE
+    Severity: CRITICAL
+    Symptoms: Payment transactions failing, revenue impact, customer complaints
+    Root Cause: Payment gateway issues, API changes, configuration problems, network issues
+    Solution: 1. Check payment gateway status 2. Verify API configuration 3. Test payment flow 4. Switch to backup gateway 5. Monitor transaction success rates
+    Tags: payment, transaction, gateway, revenue, customer-impact
+
+43. **Email Delivery Failure**
+    Category: EMAIL_DELIVERY_FAILURE
+    Severity: MEDIUM
+    Symptoms: Emails not being delivered, bounce rates high, SMTP errors
+    Root Cause: SMTP server issues, IP blacklisting, authentication problems, quota exceeded
+    Solution: 1. Check SMTP server status 2. Verify IP reputation 3. Fix authentication 4. Check sending quotas 5. Implement email monitoring
+    Tags: email, smtp, delivery, reputation, authentication
+
+44. **Report Generation Timeout**
+    Category: REPORT_GENERATION_TIMEOUT
+    Severity: MEDIUM
+    Symptoms: Report generation jobs timing out, users not receiving reports, system resource exhaustion
+    Root Cause: Large dataset processing, inefficient queries, inadequate resources, missing optimization
+    Solution: 1. Optimize report queries 2. Implement pagination 3. Increase timeout limits 4. Add resource monitoring 5. Consider async processing
+    Tags: reporting, timeout, query-optimization, resource-management
+
+45. **File Upload Failure**
+    Category: FILE_UPLOAD_FAILURE
+    Severity: MEDIUM
+    Symptoms: File uploads failing, users unable to attach documents, storage errors
+    Root Cause: Storage quota exceeded, file size limits, network issues, permission problems
+    Solution: 1. Check storage quota 2. Verify file size limits 3. Test network connectivity 4. Check permissions 5. Implement upload monitoring
+    Tags: file-upload, storage, quota, permissions, user-experience
+
+## Compliance & Audit Incidents
+
+46. **Audit Log Tampering Detected**
+    Category: AUDIT_LOG_TAMPERING
+    Severity: CRITICAL
+    Symptoms: Missing audit entries, log integrity violations, suspicious log modifications
+    Root Cause: Unauthorized access to log systems, application vulnerabilities, insider threats
+    Solution: 1. Secure log systems 2. Investigate access patterns 3. Restore log integrity 4. Implement log immutability 5. Enhance access controls
+    Tags: audit-logs, security, compliance, integrity, access-control
+
+47. **GDPR Data Retention Violation**
+    Category: GDPR_VIOLATION
+    Severity: HIGH
+    Symptoms: Personal data retained beyond policy, data subject requests not fulfilled, compliance audit findings
+    Root Cause: Inadequate data retention policies, missing data deletion processes, system integration issues
+    Solution: 1. Implement data deletion 2. Update retention policies 3. Audit data storage 4. Automate compliance processes 5. Train staff on GDPR
+    Tags: gdpr, compliance, data-retention, privacy, data-protection
+
+48. **Security Certificate Compliance Failure**
+    Category: COMPLIANCE_FAILURE
+    Severity: MEDIUM
+    Symptoms: Security audit findings, certificate validation failures, compliance violations
+    Root Cause: Expired certificates, weak encryption, missing security controls, inadequate documentation
+    Solution: 1. Renew certificates 2. Upgrade encryption 3. Implement security controls 4. Update documentation 5. Schedule regular audits
+    Tags: compliance, security, certificates, encryption, audit
+
+49. **Data Export Regulation Violation**
+    Category: DATA_EXPORT_VIOLATION
+    Severity: HIGH
+    Symptoms: Unauthorized data exports, regulatory compliance violations, data sovereignty issues
+    Root Cause: Inadequate export controls, missing data classification, insufficient monitoring
+    Solution: 1. Block unauthorized exports 2. Implement data classification 3. Add export monitoring 4. Update policies 5. Train users on regulations
+    Tags: data-export, compliance, regulation, data-sovereignty, monitoring
+
+50. **Backup Retention Policy Violation**
+    Category: BACKUP_RETENTION_VIOLATION
+    Severity: MEDIUM
+    Symptoms: Backups retained beyond policy, storage costs increasing, compliance audit findings
+    Root Cause: Automated retention not configured, policy changes not implemented, manual process failures
+    Solution: 1. Configure automated retention 2. Update backup policies 3. Clean up old backups 4. Implement monitoring 5. Document procedures
+    Tags: backup, retention, compliance, automation, policy
